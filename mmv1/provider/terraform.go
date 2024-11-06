@@ -488,6 +488,10 @@ func (t Terraform) CompileFileList(outputFolder string, files map[string]string,
 		formatFile := filepath.Ext(targetFile) == ".go"
 
 		fileTemplate.GenerateFile(targetFile, source, providerWithProducts, formatFile, templates...)
+		// continue to next file if no file was generated
+		if _, err := os.Stat(targetFile); errors.Is(err, os.ErrNotExist) {
+			continue
+		}
 		t.replaceImportPath(outputFolder, target)
 		t.addHashicorpCopyRightHeader(outputFolder, target)
 	}
